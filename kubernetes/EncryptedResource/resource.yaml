@@ -74,14 +74,11 @@ items:
                 defaultMode: 400
                 optional: true
 
-  - apiVersion: apiextensions.k8s.io/v1beta1
+  - apiVersion: apiextensions.k8s.io/v1
     kind: CustomResourceDefinition
     metadata:
       # name must match the spec fields below, and be in the form: <plural>.<group>
       name: encryptedresources.deploy.razee.io
-      annotations:
-        razee.io/git-repo: "{{{GIT_REMOTE}}}"
-        razee.io/commit-sha: "{{{TRAVIS_COMMIT}}}"
     spec:
       # group name to use for REST API: /apis/<group>/<version>
       group: deploy.razee.io
@@ -92,6 +89,75 @@ items:
           served: true
           # One and only one version must be marked as the storage version.
           storage: true
+          schema:
+            # openAPIV3Schema is the schema for validating custom objects.
+            openAPIV3Schema:
+              type: object
+              required: [spec]
+              properties:
+                spec:
+                  type: object
+                  required: [resources, auth]
+                  properties:
+                    resources:
+                      type: array
+                      minItems: 1
+                      items:
+                        type: string
+                        # make this an object to handle asciiarmored data and binary data
+                    auth:
+                      type: object
+                      oneOf:
+                        - required: [privateKey]
+                        - required: [privateKeyRef]
+                      properties:
+                        privateKey:
+                          type: string
+                        privateKeyRef:
+                          type: object
+                          properties:
+                            data:
+                              type: string
+                            valueFrom:
+                              type: object
+                              required: [secretKeyRef]
+                              properties:
+                                secretKeyRef:
+                                  type: object
+                                  required: [name, key]
+                                  properties:
+                                    name:
+                                      type: string
+                                    namespace:
+                                      type: string
+                                    key:
+                                      type: string
+                        passphrase:
+                          type: string
+                        passphraseRef:
+                          type: object
+                          required: [valueFrom]
+                          properties:
+                            valueFrom:
+                              type: object
+                              required: [secretKeyRef]
+                              properties:
+                                secretKeyRef:
+                                  type: object
+                                  required: [name, key]
+                                  properties:
+                                    name:
+                                      type: string
+                                    namespace:
+                                      type: string
+                                    key:
+                                      type: string
+                status:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+          subresources:
+            # status enables the status subresource.
+            status: {}
       # either Namespaced or Cluster
       scope: Namespaced
       names:
@@ -104,69 +170,5 @@ items:
         # shortNames allow shorter string to match your resource on the CLI
         shortNames:
           - er
-      subresources:
-        # status enables the status subresource.
-        status: {}
-      validation:
-        # openAPIV3Schema is the schema for validating custom objects.
-        openAPIV3Schema:
-          type: object
-          required: [spec]
-          properties:
-            spec:
-              type: object
-              required: [resources, auth]
-              properties:
-                resources:
-                  type: array
-                  items:
-                    type: string
-                auth:
-                  type: object
-                  oneOf:
-                    - required: [privateKey]
-                    - required: [privateKeyRef]
-                  properties:
-                    privateKey:
-                      type: string
-                    privateKeyRef:
-                      type: object
-                      required: [valueFrom]
-                      properties:
-                        valueFrom:
-                          type: object
-                          required: [secretKeyRef]
-                          properties:
-                            secretKeyRef:
-                              type: object
-                              required: [name, key]
-                              properties:
-                                name:
-                                  type: string
-                                namespace:
-                                  type: string
-                                key:
-                                  type: string
-                    passphrase:
-                      type: string
-                    passphraseRef:
-                      type: object
-                      required: [valueFrom]
-                      properties:
-                        valueFrom:
-                          type: object
-                          required: [secretKeyRef]
-                          properties:
-                            secretKeyRef:
-                              type: object
-                              required: [name, key]
-                              properties:
-                                name:
-                                  type: string
-                                namespace:
-                                  type: string
-                                key:
-                                  type: string
-            status:
-              type: object
-              x-kubernetes-preserve-unknown-fields: true
+        categories:
+          - razee
