@@ -79,6 +79,9 @@ items:
     metadata:
       # name must match the spec fields below, and be in the form: <plural>.<group>
       name: encryptedresources.deploy.razee.io
+      annotations:
+        razee.io/git-repo: "{{{GIT_REMOTE}}}"
+        razee.io/commit-sha: "{{{TRAVIS_COMMIT}}}"
     spec:
       # group name to use for REST API: /apis/<group>/<version>
       group: deploy.razee.io
