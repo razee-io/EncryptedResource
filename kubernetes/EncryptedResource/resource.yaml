@@ -107,7 +107,6 @@ items:
                       minItems: 1
                       items:
                         type: string
-                        # make this an object to handle asciiarmored data and binary data
                     auth:
                       type: object
                       oneOf:
@@ -118,9 +117,8 @@ items:
                           type: string
                         privateKeyRef:
                           type: object
+                          required: [valueFrom]
                           properties:
-                            data:
-                              type: string
                             valueFrom:
                               type: object
                               required: [secretKeyRef]
