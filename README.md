@@ -1,6 +1,123 @@
 # EncryptedResource
 
-Razeedeploy: component to transport and decrypt secret Kubernetes resources
+[![Build Status](https://travis-ci.com/razee-io/EncryptedResource.svg?branch=master)](https://travis-ci.com/razee-io/EncryptedResource)
+![GitHub](https://img.shields.io/github/license/razee-io/EncryptedResource.svg?color=success)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=razee-io/EncryptedResource)](https://dependabot.com)
+
+Razeedeploy: component to transport and decrypt secret Kubernetes resources. Currently
+supports PGP keys and encrypted resources.
+
+## Install
+
+```shell
+kubectl apply -f "https://github.com/razee-io/EncryptedResource/releases/latest/download/resource.yaml"
+```
+
+## Resource Definition
+
+### Sample
+
+```yaml
+apiVersion: "deploy.razee.io/v1alpha2"
+kind: EncryptedResource
+metadata:
+  name: <name>
+  namespace: <namespace>
+spec:
+  resources: # must be base64 encoded
+    - <encrypted-base64_encoded-resource>
+  auth:
+    privateKeyRef:
+      valueFrom:
+        secretKeyRef:
+          name: <secret_name>
+          namespace: <secret_namespace>
+          key: <secret_key>
+    passphraseRef: # optional
+      valueFrom:
+        secretKeyRef:
+          name: <secret_name>
+          namespace: <secret_namespace>
+          key: <secret_key>
+```
+
+### Spec
+
+**Path:** `.spec`
+
+**Description:** `spec` is required and **must** include sections `resources`
+and `auth`.
+
+**Schema:**
+
+```yaml
+spec:
+  type: object
+  required: [resources, auth]
+  properties:
+    resources:
+      type: array
+      ...
+    auth:
+      type: object
+      ...
+```
+
+### Resources
+
+**Path:** `.spec.resources[]`
+
+**Description:** Resources to be decrypted and applied to the cluster. There must
+be at least one resource in the list.
+
+**Note:** All resources must be base64 encoded, whether they are ascii armored
+or not.
+
+**Schema:**
+
+```yaml
+resources:
+  type: array
+  minItems: 1
+  items:
+    type: string
+```
+
+### Authentication
+
+**Path:** `.spec.auth`
+
+**Description:** Authentication to be able to decrypt the resources. Auth must
+include a private key, but optionally can also include a passphrase that the private
+key is encrypted with. You may specify the key/passphrase as a secret reference
+or hardcoded as a string (hardcoded strings are not recommended, but added to
+assist in development and testing).
+
+**Note:** If using hardcoded strings, they must be base64 encoded, whether they
+are ascii armored or not.
+
+**Schema:**
+
+```yaml
+auth:
+  type: object
+  oneOf:
+    - required: [privateKey]
+    - required: [privateKeyRef]
+  properties:
+    privateKey:
+      type: string
+    privateKeyRef:
+      type: object
+      required: [valueFrom]
+      ...
+    passphrase:
+      type: string
+    passphraseRef:
+      type: object
+      required: [valueFrom]
+      ...
+```
 
 ### Managed Resource Labels
 
