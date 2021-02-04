@@ -41,9 +41,10 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@razee/kubernetes-util": "^0.1.6",
-    "@razee/razeedeploy-core": "^0.10.3",
+    "@razee/kubernetes-util": "0.2.0",
+    "@razee/razeedeploy-core": "0.11.3",
     "bunyan": "^1.8.14",
+    "js-yaml": "^4.0.0",
     "object-path": "^0.11.5",
     "openpgp": "^4.10.8"
   },
