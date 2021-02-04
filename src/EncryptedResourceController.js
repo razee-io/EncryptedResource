@@ -67,13 +67,14 @@ module.exports = class EncryptedResourceController extends CompositeController {
           message: resourceAsciiArmored ? await openpgp.message.readArmored(r) : await openpgp.message.read(r),
           privateKeys: [privateKey]
         });
-        let json = yaml.safeLoadAll(decrypted.data);
+        let json = yaml.loadAll(decrypted.data);
         json.forEach(dd => decryptedResources.push(dd));
       } catch (e) {
         e.message = `Failed to decrypt "spec.resources[${i}]": "${e.message}"`;
         errors.push(e);
       }
     }
+    this.log.debug(decryptedResources);
 
     // apply resources to cluster
     for (let i = 0; i < decryptedResources.length; i++) {
@@ -85,7 +86,7 @@ module.exports = class EncryptedResourceController extends CompositeController {
         let rsp = await this.applyChild(dResource);
         if (!rsp.statusCode || rsp.statusCode < 200 || rsp.statusCode >= 300) {
           this.log.error(rsp);
-          errors.push({ message: `${kind}.${group} "${name}" status ${rsp.statusCode} ${objectPath.get(rsp, 'body.reason', '')}.. see logs for details` });
+          errors.push({ message: `${kind}.${group} "${name}" status ${rsp.statusCode} ${objectPath.get(rsp, 'body.message', '')}` });
         }
       } catch (e) {
         e.message = `Failed to apply child "${kind}.${group} ${name}": "${e.message}"`;
