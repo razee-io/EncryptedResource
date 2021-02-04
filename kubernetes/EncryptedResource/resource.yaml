@@ -107,6 +107,11 @@ items:
                       minItems: 1
                       items:
                         type: string
+                    clusterAuth:
+                      type: object
+                      properties:
+                        impersonateUser:
+                          type: string
                     auth:
                       type: object
                       oneOf:
