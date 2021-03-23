@@ -48,7 +48,6 @@ items:
                   value:  razee-io/encryptedresource
                 - name: USER_AGENT_VERSION
                   value:  "{{{TRAVIS_TAG}}}"
-                
                 - name: CRD_WATCH_TIMEOUT_SECONDS
                   valueFrom:
                     configMapKeyRef:
