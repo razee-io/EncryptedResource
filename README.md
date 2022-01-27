@@ -1,6 +1,7 @@
 # This repo will be deprecated and unsupported starting April 2022
 
-Discontinuing this operator in favor of recommending [ExternalSecrets](https://github.com/external-secrets/kubernetes-external-secrets) which is widely used.
+Discontinuing this operator in favor of recommending [ExternalSecrets](https://github.com/external-secrets/kubernetes-external-secrets)
+which is widely used.
 
 ## EncryptedResource
 
