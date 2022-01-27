@@ -1,7 +1,6 @@
 # This repo will be deprecated and unsupported starting April 2022
 
-We found this controller doesnt scale well as is, and there are other tools that
-we think work better and are more secure, such as [ExternalSecrets](https://github.com/external-secrets/kubernetes-external-secrets).
+Discontinuing this operator in favor of recommending [ExternalSecrets](https://github.com/external-secrets/kubernetes-external-secrets) which is widely used.
 
 ## EncryptedResource
 
