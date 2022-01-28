@@ -1,4 +1,9 @@
-# EncryptedResource
+# This repo will be deprecated and unsupported starting April 2022
+
+Discontinuing this operator in favor of recommending [ExternalSecrets](https://github.com/external-secrets/kubernetes-external-secrets)
+which is widely used.
+
+## EncryptedResource
 
 [![Build Status](https://travis-ci.com/razee-io/EncryptedResource.svg?branch=master)](https://travis-ci.com/razee-io/EncryptedResource)
 ![GitHub](https://img.shields.io/github/license/razee-io/EncryptedResource.svg?color=success)
